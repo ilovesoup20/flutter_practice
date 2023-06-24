@@ -1,10 +1,10 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
-import 'package:namer_app/login.dart';
+import 'package:namer_app/practice_apps/04_gestures.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(LoginApp());
+  runApp(gestureExample());
 }
 
 class MyApp extends StatelessWidget {
@@ -62,40 +62,42 @@ class _MyHomePageState extends State<MyHomePage> {
         page = GeneratorPage();
         break;
       case 1:
-        page = Placeholder();
+        page = FavoritesPage();
         break;
       default:
         throw UnimplementedError("No widget for $selectedIndex");
     }
-    return Scaffold(
-        body: Row(children: [
-      SafeArea(
-        child: NavigationRail(
-          extended: false,
-          destinations: [
-            NavigationRailDestination(
-              icon: Icon(Icons.home),
-              label: Text("Home"),
-            ),
-            NavigationRailDestination(
-              icon: Icon(Icons.favorite),
-              label: Text("Favorites"),
-            ),
-          ],
-          selectedIndex: selectedIndex,
-          onDestinationSelected: (value) {
-            setState(() {
-              selectedIndex = value;
-            });
-          },
+    return LayoutBuilder(builder: (context, constraints) {
+      return Scaffold(
+          body: Row(children: [
+        SafeArea(
+          child: NavigationRail(
+            extended: constraints.maxWidth >= 600,
+            destinations: [
+              NavigationRailDestination(
+                icon: Icon(Icons.home),
+                label: Text("Home"),
+              ),
+              NavigationRailDestination(
+                icon: Icon(Icons.favorite),
+                label: Text("Favorites"),
+              ),
+            ],
+            selectedIndex: selectedIndex,
+            onDestinationSelected: (value) {
+              setState(() {
+                selectedIndex = value;
+              });
+            },
+          ),
         ),
-      ),
-      Expanded(
-          child: Container(
-        color: Theme.of(context).colorScheme.primaryContainer,
-        child: page,
-      ))
-    ]));
+        Expanded(
+            child: Container(
+          color: Theme.of(context).colorScheme.primaryContainer,
+          child: page,
+        ))
+      ]));
+    });
   }
 }
 
@@ -156,6 +158,30 @@ class BigCard extends StatelessWidget {
         child: Text(pair.asLowerCase,
             style: style, semanticsLabel: "${pair.first} ${pair.second}"),
       ),
+    );
+  }
+}
+
+class FavoritesPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext ctx) {
+    var appState = ctx.watch<MyAppState>();
+    if (appState.favorites.isEmpty) {
+      return Center(
+        child: Text('No favorites'),
+      );
+    }
+
+    return ListView(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(20),
+          child: Text('You have ${appState.favorites.length} favorites'),
+        ),
+        for (var pair in appState.favorites)
+          ListTile(
+              leading: Icon(Icons.favorite), title: Text(pair.asLowerCase)),
+      ],
     );
   }
 }
