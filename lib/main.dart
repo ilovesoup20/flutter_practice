@@ -1,6 +1,6 @@
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
-import 'package:namer_app/practice_apps/04_gestures.dart';
+import 'package:namer_app/practice_apps/01_introduction/04_gestures.dart';
 import 'package:provider/provider.dart';
 
 void main() {
